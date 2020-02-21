@@ -14,7 +14,17 @@ include ("headfile.html");   //include header layout file
 
 echo "<h4>".$pagename."</h4>";  //display the name of the page on the webpage
 
+//remove an item from the basket
+if(isset($_POST['id_To_Delete'])){
+    $delprodid = $_POST['id_To_Delete'];
+    unset($_SESSION['basket'][$delprodid]);
+    echo "1 item is removed from the basket...";
+    if(!isset($_SESSION['basket'])){
+        unset($_SESSION['basket']);
+    }
+}
 
+//when adding an item to the basket
 if (isset($_POST['h_prodid'])) {
     $newprodid = $_POST['h_prodid'];
     $reququantity = $_POST['p_quantity'];
@@ -30,40 +40,45 @@ if (isset($_POST['h_prodid'])) {
     echo "<p> Current Basket is unchanged </p>";
 }
 
-//if(isset($_POST['h_prodid'])){
-
+//displaying the basket
+if(isset($_SESSION['basket'])){
     //table for the basket session
     echo "<table border = '0px'>";
-    echo "<tr> <th>Product Name</th> <th>Price</th> <th>Quantity</th> <th>Sub Total</th> </tr>";
-
-    if(isset($_SESSION['basket'])){
-        $total = 0;
-        foreach ($_SESSION['basket'] as $newprodid => $reququantity) {
-            $SQL = "SELECT prodName, prodPicNameLarge, prodDescripLong, prodPrice, prodQuantity from Product where prodId = $newprodid";
-            $exeSQL = mysqli_query($conn, $SQL) or die;
-            $arrayp = mysqli_fetch_array($exeSQL);
-            $subTotal = $arrayp['prodPrice'] * $reququantity;
-            $total = $total + $subTotal;
-            echo "<tr>";
-            echo "<td> ".$arrayp['prodName']. "</td>";
-            echo "<td>&#163 ". $arrayp['prodPrice']. "</td>";
-            echo "<td>".$_SESSION['basket'][$newprodid]."</td>";
-            echo "<td style = 'text-align: right'>&#163 ".$subTotal. "</td>";
-            echo "</tr>";
-            
-            
-        }
+    echo "<tr> <th>Product Name</th> <th>Price</th> <th>Quantity</th> <th>Sub Total</th> <th>Action</th> </tr> ";
+    $total = 0;
+    foreach ($_SESSION['basket'] as $newprodid => $reququantity) {
+        $SQL = "SELECT prodId, prodName, prodPicNameLarge, prodDescripLong, prodPrice, prodQuantity from Product where prodId = $newprodid";
+        $exeSQL = mysqli_query($conn, $SQL) or die;
+        $arrayp = mysqli_fetch_array($exeSQL);
+        $subTotal = $arrayp['prodPrice'] * $reququantity;
+        $total = $total + $subTotal;
         echo "<tr>";
-        echo "<td colspan = '3'> Grand Total </td> <td style = 'text-align: right'>&#163 ".$total."</td> ";
+        echo "<td> ".$arrayp['prodName']. "</td>";
+        echo "<td>&#163 ". $arrayp['prodPrice']. "</td>";
+        echo "<td>".$_SESSION['basket'][$newprodid]."</td>";
+        echo "<td style = 'text-align: right'>&#163 ".$subTotal. "</td>";
+        echo "<td> <form method = 'post' action = 'basket.php'> <input type = 'submit' value = 'REMOVE'>";
+        echo "<input type = 'hidden' name = 'id_To_Delete' value = ".$newprodid. ">";
         echo "</tr>";
-        echo "</table>";
         
-    }else{
-        echo "<h3> The Basket is Empty </h3>";
+        
     }
+    echo "<tr>";
+    echo "<td colspan = '3'> Grand Total </td> <td style = 'text-align: right'>&#163 ".$total."</td> <td> </td> ";
+    echo "</tr>";
+    echo "</table>";
     
+}else{
+    echo "<h3> The Basket is Empty </h3>";
+}
 
-//}
+
+//to clear the basket
+echo "<p> <a href = 'clearbasket.php'> CLEAR BASKET </a> </p>";
+
+echo "<p> New Hometeq Customers:  <a href = 'signup.php'> SIGN UP </a> </p>";
+echo "<p> Existing Members:  <a href = 'login.php'>  LOG IN </a> </p>";
+
 
 include ("footfile.html"); //include footer layout
 
