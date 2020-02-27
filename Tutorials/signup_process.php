@@ -14,8 +14,12 @@ include ("headfile.html");   //include header layout file
 echo "<h4>".$pagename."</h4>";  //display the name of the page on the webpage
 
 //initiating the variables
-//if(isset($_POST['submit'])){
-//         if($_POST['password'] == $_POST['confirmPassword']){
+if(isset($_POST['firstName'])&& $_POST['lastName'] && $_POST['address'] && $_POST['postcode'] && $_POST['telNo'] && $_POST['emailAddress'] && $_POST['password'] && $_POST['confirmPassword']){
+         
+    if($_POST['password'] == $_POST['confirmPassword']){
+
+        $regex = '/^[_a-z0-9-]+(\.[_a-z0-9-]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,3})$/'; 
+        if(preg_match($emailAddress, $regex)){
 
                 $firstName = $_POST['firstName'];
                 $lastName = $_POST['lastName'];
@@ -33,9 +37,16 @@ echo "<h4>".$pagename."</h4>";  //display the name of the page on the webpage
                     } else {
                         echo "Error: " . $sql . "<br>" . mysqli_error($conn);
                     }
+        }else{
+            echo "<p> The email is not in the correct format";
+        }
                     
-//         }
-// }
+    }else{
+             echo "<p> The passwords don't match </p>";
+         }
+ }else{
+     echo "<p>Atleast one field is empty &nbsp</p> <p> <a href = 'signup.php' style = 'color: black'> Click here to Sign Up </a> </p>";
+ }
 
 
 include ("footfile.html"); //include footer layout
