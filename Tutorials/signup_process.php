@@ -19,7 +19,7 @@ if(isset($_POST['firstName'])&& $_POST['lastName'] && $_POST['address'] && $_POS
     if($_POST['password'] == $_POST['confirmPassword']){
 
         $regex = '/^[_a-z0-9-]+(\.[_a-z0-9-]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,3})$/'; 
-        if(preg_match($emailAddress, $regex)){
+        if(preg_match($_POST['emailAddress'], $regex)){
 
                 $firstName = $_POST['firstName'];
                 $lastName = $_POST['lastName'];
@@ -29,14 +29,20 @@ if(isset($_POST['firstName'])&& $_POST['lastName'] && $_POST['address'] && $_POS
                 $emailAddress =$_POST['emailAddress'];
                 $password = $_POST['password'];
 
+                $duplicate=mysqli_query($conn,"select * from user_login where userEmail = '$emailAddress'");
+                if(mysqli_num_rows($duplicate) > 0){
+                    echo "Email is already there. Please try again";
+                }else {
 
-                $sql = "INSERT INTO users (userFName, userSName, userAddress, userPostCode, userTelNo, userEmail, userPassword) VALUES ('{$firstName}', '{$lastName}', '{$address}', '{$postcode}', '{$telNo}', '{$emailAddress}', '{$password}')";
 
-                if (mysqli_query($conn, $sql)) {
+                    $sql = "INSERT INTO users (userFName, userSName, userAddress, userPostCode, userTelNo, userEmail, userPassword) VALUES ('{$firstName}', '{$lastName}', '{$address}', '{$postcode}', '{$telNo}', '{$emailAddress}', '{$password}')";
+
+                    if (mysqli_query($conn, $sql)) {
                         echo "<p>New record created successfully<p>";
                     } else {
                         echo "Error: " . $sql . "<br>" . mysqli_error($conn);
                     }
+                }
         }else{
             echo "<p> The email is not in the correct format";
         }
