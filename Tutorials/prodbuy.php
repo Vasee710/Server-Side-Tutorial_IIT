@@ -1,4 +1,5 @@
 <?php
+session_start();
 include ('db.php');
 
 $pagename = "A smart buy for a smart home"; //create and populate a variable called $pagename
@@ -16,6 +17,8 @@ $prodid = $_GET['u_prod_id'];
 echo "<body>";
 
 include ("headfile.html");   //include header layout file
+include ("detectlogin.php");
+
 
 echo "<h4>".$pagename."</h4>";  //display the name of the page on the webpage
 

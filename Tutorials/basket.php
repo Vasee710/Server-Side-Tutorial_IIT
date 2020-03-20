@@ -11,6 +11,8 @@ echo "<title>".$pagename."</title>"; //display the name of the page as window ti
 echo "<body>";
 
 include ("headfile.html");   //include header layout file
+include ("detectlogin.php");
+
 
 echo "<h4>".$pagename."</h4>";  //display the name of the page on the webpage
 

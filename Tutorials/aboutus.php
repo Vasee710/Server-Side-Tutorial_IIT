@@ -1,4 +1,5 @@
 <?php
+session_start();
 
 $pagename = "hometeq: app and cloud controlled tech for your home"; //create and populate a variable called $pagename
 echo "<link rel = \"stylesheet\" type = \"text/css\" href = \"mystylesheet.css\">"; //call in stylesheet
@@ -8,6 +9,7 @@ echo "<title>".$pagename."</title>"; //display the name of the page as window ti
 echo "<body>";
 
 include ("headfile.html");   //include header layout file
+include ("detectlogin.php");
 
 echo "<h4>".$pagename."</h4>";  //display the name of the page on the webpage
 
