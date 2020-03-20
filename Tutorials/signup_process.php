@@ -19,7 +19,7 @@ if(isset($_POST['firstName'])&& $_POST['lastName'] && $_POST['address'] && $_POS
     if($_POST['password'] == $_POST['confirmPassword']){
 
         $regex = '/^[_a-z0-9-]+(\.[_a-z0-9-]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,3})$/'; 
-        if(preg_match($_POST['emailAddress'], $regex)){
+        if(preg_match($regex, $_POST['emailAddress'])){
 
                 $firstName = $_POST['firstName'];
                 $lastName = $_POST['lastName'];
@@ -29,29 +29,39 @@ if(isset($_POST['firstName'])&& $_POST['lastName'] && $_POST['address'] && $_POS
                 $emailAddress =$_POST['emailAddress'];
                 $password = $_POST['password'];
 
-                $duplicate=mysqli_query($conn,"select * from user_login where userEmail = '$emailAddress'");
-                if(mysqli_num_rows($duplicate) > 0){
-                    echo "Email is already there. Please try again";
-                }else {
-
-
                     $sql = "INSERT INTO users (userFName, userSName, userAddress, userPostCode, userTelNo, userEmail, userPassword) VALUES ('{$firstName}', '{$lastName}', '{$address}', '{$postcode}', '{$telNo}', '{$emailAddress}', '{$password}')";
+                    $executeQuery = mysqli_query($conn, $sql);
+                    $errNo = mysqli_errno($conn);
+                    
+                    //if errNo is 0, then all clear for registration
+                    if($errNo == 0){
+                        echo "<p> You have successfully registered to Hometeq </p>";
+                        echo "<p> Access the Log In page: <a href = 'login.php'> Log In </a> </p>";
+                    }else{
+                        echo "<p> There is an error in the registration </p>";
+                        if($errNo == 1062){
+                            echo "<p> Email you are registering with already exists </p>";
+                            echo "<p> Click <a href = 'signup.php' style = 'color:black'> Sign Up </a> to register again </p>";
 
-                    if (mysqli_query($conn, $sql)) {
-                        echo "<p>New record created successfully<p>";
-                    } else {
-                        echo "Error: " . $sql . "<br>" . mysqli_error($conn);
+                        }else if($errNo == 1064){
+                            echo "<p> Invalid characters have been entered. Please register again </p>";
+                            echo "<p> Click <a href = 'signup.php' style = 'color:black'> Sign Up </a> to register again </p>";
+                        }
                     }
-                }
+
         }else{
-            echo "<p> The email is not in the correct format";
+            echo "<p> The email is not in the correct format </p>";
+            echo "<p> Click <a href = 'signup.php' style = 'color:black'> Sign Up </a> to register again </p>";
+
         }
                     
     }else{
              echo "<p> The passwords don't match </p>";
+             echo "<p> Click <a href = 'signup.php' style = 'color:black'> Sign Up </a> to register again </p>";
+
          }
  }else{
-     echo "<p>Atleast one field is empty &nbsp</p> <p> <a href = 'signup.php' style = 'color: black'> Click here to Sign Up </a> </p>";
+     echo "<p>Atleast one field is empty &nbsp</p> <p> <a href = 'signup.php' style = 'color: black'> Click here to Sign Up </a> again </p>";
  }
 
 
