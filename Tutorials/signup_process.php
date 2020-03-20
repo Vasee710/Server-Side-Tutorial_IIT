@@ -28,8 +28,9 @@ if(isset($_POST['firstName'])&& $_POST['lastName'] && $_POST['address'] && $_POS
                 $telNo =$_POST['telNo'];
                 $emailAddress =$_POST['emailAddress'];
                 $password = $_POST['password'];
+                $type = "Hometeq Customer";
 
-                    $sql = "INSERT INTO users (userFName, userSName, userAddress, userPostCode, userTelNo, userEmail, userPassword) VALUES ('{$firstName}', '{$lastName}', '{$address}', '{$postcode}', '{$telNo}', '{$emailAddress}', '{$password}')";
+                    $sql = "INSERT INTO users (userType, userFName, userSName, userAddress, userPostCode, userTelNo, userEmail, userPassword) VALUES ('{$type}','{$firstName}', '{$lastName}', '{$address}', '{$postcode}', '{$telNo}', '{$emailAddress}', '{$password}')";
                     $executeQuery = mysqli_query($conn, $sql);
                     $errNo = mysqli_errno($conn);
                     
