@@ -35,7 +35,7 @@ if (isset($_POST['h_prodid'])) {
     //create a new cell in the basket session array. Index this cell with the new product id.
     //inside the cell store, the required product quantity
     $_SESSION['basket'][$newprodid] = $reququantity;
-    echo "<p>Item ID ".$newprodid. " with quantity ".$reququantity. "is added." ;
+    echo "<p>Item ID ".$newprodid. " with quantity ".$reququantity. " is added." ;
 
     
 } else {
