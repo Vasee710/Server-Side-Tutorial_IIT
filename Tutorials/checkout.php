@@ -14,61 +14,66 @@ include ("detectlogin.php");
 
 echo "<h4>".$pagename."</h4>";  //display the name of the page on the webpage
 
-$userid = $_SESSION['userid'];
-$datetime = date('Y-m-d H:i:s');
-$currentdatetime = mysqli_real_escape_string($conn, $datetime);
+//if basket is not empty, this would
+if(isset($_SESSION['basket'])){
+    $userid = $_SESSION['userid'];
+    $datetime = date('Y-m-d H:i:s');
+    $currentdatetime = mysqli_real_escape_string($conn, $datetime);
 
-$sql = "INSERT INTO orders (userId, orderDateTime) VALUES ($userid, '$currentdatetime')";
-$executeQuery = mysqli_query($conn, $sql);
+    $sql = "INSERT INTO orders (userId, orderDateTime) VALUES ($userid, '$currentdatetime')";
+    $executeQuery = mysqli_query($conn, $sql);
 
-//checking if there are any errors in previous insert query
-if(mysqli_errno($conn) == 0){
-    //getting the last order of the current logged in user
-    $sql_2 = "SELECT MAX(orderNo) as maxNo from orders where userId = $userid";
-    $executeQuery_2 = mysqli_query($conn, $sql_2);
+    //checking if there are any errors in previous insert query
+    if(mysqli_errno($conn) == 0){
+        //getting the last order of the current logged in user
+        $sql_2 = "SELECT MAX(orderNo) as maxNo from orders where userId = $userid";
+        $executeQuery_2 = mysqli_query($conn, $sql_2);
 
-    $arrayord = mysqli_fetch_array($executeQuery_2);
-    $orderNo = $arrayord['maxNo'];
-    echo "<p> Your order no: $orderNo is placed successfully</p>";
-    echo "<p> Your basket is cleared </p>";
+        $arrayord = mysqli_fetch_array($executeQuery_2);
+        $orderNo = $arrayord['maxNo'];
+        echo "<p> Your order no: $orderNo is placed successfully</p>";
+        echo "<p> Your basket is cleared </p>";
 
-    echo "<table border = '0px'>";
-    echo "<tr> <th>Product Name</th> <th>Price</th> <th>Quantity</th> <th>Sub Total</th> </tr> ";
-    $total = 0;
-    foreach ($_SESSION['basket'] as $newprodid => $reququantity) {
-        $SQL = "SELECT prodId, prodName, prodPicNameLarge, prodDescripLong, prodPrice, prodQuantity from Product where prodId = $newprodid";
-        $exeSQL = mysqli_query($conn, $SQL) or die;
-        $arrayp = mysqli_fetch_array($exeSQL);
-        $subTotal = $arrayp['prodPrice'] * $reququantity;
-        $total = $total + $subTotal;
+        echo "<table border = '0px'>";
+        echo "<tr> <th>Product Name</th> <th>Price</th> <th>Quantity</th> <th>Sub Total</th> </tr> ";
+        $total = 0;
+        foreach ($_SESSION['basket'] as $newprodid => $reququantity) {
+            $SQL = "SELECT prodId, prodName, prodPicNameLarge, prodDescripLong, prodPrice, prodQuantity from Product where prodId = $newprodid";
+            $exeSQL = mysqli_query($conn, $SQL) or die;
+            $arrayp = mysqli_fetch_array($exeSQL);
+            $subTotal = $arrayp['prodPrice'] * $reququantity;
+            $total = $total + $subTotal;
 
-        $prodid = $arrayp['prodId'];
+            $prodid = $arrayp['prodId'];
 
+            echo "<tr>";
+            echo "<td> ".$arrayp['prodName']. "</td>";
+            echo "<td>&#163 ". $arrayp['prodPrice']. "</td>";
+            echo "<td>".$_SESSION['basket'][$newprodid]."</td>";
+            echo "<td style = 'text-align: right'>&#163 ".$subTotal. "</td>";
+            echo "<input type = 'hidden' name = 'id_To_Delete' value = ".$newprodid. ">";
+            echo "</tr>";
+
+            //inserting into order_line db (the order no, prod id, and the number of quantitites selected)
+            $sql_4 = "INSERT INTO order_line (orderNo, prodId, quantityOrdered, subTotal) VALUES ($orderNo, $prodid, $reququantity, $subTotal )";
+            $executeQuery_4 = mysqli_query($conn, $sql_4);
+        }
         echo "<tr>";
-        echo "<td> ".$arrayp['prodName']. "</td>";
-        echo "<td>&#163 ". $arrayp['prodPrice']. "</td>";
-        echo "<td>".$_SESSION['basket'][$newprodid]."</td>";
-        echo "<td style = 'text-align: right'>&#163 ".$subTotal. "</td>";
-        echo "<input type = 'hidden' name = 'id_To_Delete' value = ".$newprodid. ">";
+        echo "<td colspan = '3'> Grand Total </td> <td style = 'text-align: right'>&#163 ".$total."</td> ";
         echo "</tr>";
+        echo "</table>";
 
-        //inserting into order_line db (the order no, prod id, and the number of quantitites selected)
-        $sql_4 = "INSERT INTO order_line (orderNo, prodId, quantityOrdered, subTotal) VALUES ($orderNo, $prodid, $reququantity, $subTotal )";
-        $executeQuery_4 = mysqli_query($conn, $sql_4);
+        //updating the orders table with the total
+        $sql_3 = "UPDATE orders SET orderTotal = $total WHERE orderNo = ".$orderNo;
+        $executeQuery_3 = mysqli_query($conn, $sql_3);
+        echo "<p> <a href = 'logout.php'> Log Out </a> </p>";
+    }else{
+        echo mysqli_error($conn);
     }
-    echo "<tr>";
-    echo "<td colspan = '3'> Grand Total </td> <td style = 'text-align: right'>&#163 ".$total."</td> ";
-    echo "</tr>";
-    echo "</table>";
-
-    //updating the orders table with the total
-    $sql_3 = "UPDATE orders SET orderTotal = $total WHERE orderNo = ".$orderNo;
-    $executeQuery_3 = mysqli_query($conn, $sql_3);
-    echo "<p> <a href = 'logout.php'> Log Out </a> </p>";
+    unset($_SESSION['basket']);
 }else{
-    echo mysqli_error($conn);
+    echo "<p> Your basket is empty in order to process the checkout... Please add items </p>";
 }
-unset($_SESSION['basket']);
 
 include ("footfile.html"); //include footer layout
 
