@@ -78,8 +78,15 @@ if(isset($_SESSION['basket'])){
 //to clear the basket
 echo "<p> <a href = 'clearbasket.php'> CLEAR BASKET </a> </p>";
 
-echo "<p> New Hometeq Customers:  <a href = 'signup.php'> SIGN UP </a> </p>";
-echo "<p> Existing Members:  <a href = 'login.php'>  LOG IN </a> </p>";
+//checking if the user is already logged in
+if(isset($_SESSION['userid'])){
+    echo "<p> <a href = 'checkout.php'> Check Out </a> </p>";
+}
+//if user is not logged in
+else{
+    echo "<p> New Hometeq Customers:  <a href = 'signup.php'> SIGN UP </a> </p>";
+    echo "<p> Existing Members:  <a href = 'login.php'>  LOG IN </a> </p>";
+}
 
 
 include ("footfile.html"); //include footer layout
