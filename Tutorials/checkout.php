@@ -21,7 +21,9 @@ $currentdatetime = mysqli_real_escape_string($conn, $datetime);
 $sql = "INSERT INTO orders (userId, orderDateTime) VALUES ($userid, '$currentdatetime')";
 $executeQuery = mysqli_query($conn, $sql);
 
+//checking if there are any errors in previous insert query
 if(mysqli_errno($conn) == 0){
+    //getting the last order of the current logged in user
     $sql_2 = "SELECT MAX(orderNo) as maxNo from orders where userId = $userid";
     $executeQuery_2 = mysqli_query($conn, $sql_2);
 
@@ -50,6 +52,7 @@ if(mysqli_errno($conn) == 0){
         echo "<input type = 'hidden' name = 'id_To_Delete' value = ".$newprodid. ">";
         echo "</tr>";
 
+        //inserting into order_line db (the order no, prod id, and the number of quantitites selected)
         $sql_4 = "INSERT INTO order_line (orderNo, prodId, quantityOrdered, subTotal) VALUES ($orderNo, $prodid, $reququantity, $subTotal )";
         $executeQuery_4 = mysqli_query($conn, $sql_4);
     }
@@ -58,6 +61,7 @@ if(mysqli_errno($conn) == 0){
     echo "</tr>";
     echo "</table>";
 
+    //updating the orders table with the total
     $sql_3 = "UPDATE orders SET orderTotal = $total WHERE orderNo = ".$orderNo;
     $executeQuery_3 = mysqli_query($conn, $sql_3);
     echo "<p> <a href = 'logout.php'> Log Out </a> </p>";
