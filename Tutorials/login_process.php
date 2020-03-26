@@ -50,9 +50,16 @@ if(isset($_POST['emailAddress']) && ($_POST['password'])){
 
                 echo "<p> You have successfully logged in </p>";
                 echo "<p> Welcome $fName $sName </p>";
-                echo "<p> You have logged in as a $type.";
-                echo "<p> Continue shopping for <a href = 'index.php'> HomeTeq Shopping Site </a> </p>";
-                echo "<p> View your <a href = 'basket.php'> Smart Basket </a> </p>";
+                if($type == "Hometeq Customer"){
+                    $_SESSION['user_type'] = 'Customer';
+                    echo "<p> You have logged in as a $type.";
+                    echo "<p> Continue shopping for <a href = 'index.php'> HomeTeq Shopping Site </a> </p>";
+                    echo "<p> View your <a href = 'basket.php'> Smart Basket </a> </p>";
+                }else if($type == "Admin"){
+                    $_SESSION['user_type'] = 'Administrator';
+                    echo "<p> You have logged in as <b>Admin</b> </p>";
+                    echo "<p> Go to home page: <a href = 'index.php'> HomeTeq Shopping Site </a> </p>";
+                }
 
             }
         }
