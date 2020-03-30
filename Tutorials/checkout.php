@@ -20,7 +20,7 @@ if(isset($_SESSION['basket'])){
     $datetime = date('Y-m-d H:i:s');
     $currentdatetime = mysqli_real_escape_string($conn, $datetime);
 
-    $sql = "INSERT INTO orders (userId, orderDateTime) VALUES ($userid, '$currentdatetime')";
+    $sql = "INSERT INTO orders (userId, orderDateTime, orderStatus) VALUES ($userid, '$currentdatetime', 'Placed')";
     $executeQuery = mysqli_query($conn, $sql);
 
     //checking if there are any errors in previous insert query
