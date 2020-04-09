@@ -23,9 +23,10 @@ include ("detectlogin.php");
 echo "<h4>".$pagename."</h4>";  //display the name of the page on the webpage
 
 //create a sql variable and populate it with a sql statement that gets the product details
-$SQL = "SELECT prodName, prodPicNameLarge, prodDescripLong, prodPrice, prodQuantity from Product where prodId = $prodid";
+$SQL = "SELECT prodId, prodName, prodPicNameLarge, prodDescripLong, prodPrice, prodQuantity from Product where prodId = $prodid";
 //run SQL query for connected DB or exit and display error message
 $exeSQL = mysqli_query($conn, $SQL) or die;
+
 
 echo "<table style = 'border: 0px'>";
 
@@ -56,6 +57,22 @@ while($arrayp = mysqli_fetch_array($exeSQL)){
         echo "<option value = ".$i.">$i</option>";
     }
     echo "</select><br/><br/>";
+
+    //$sql2 = "SELECT AVG(rating) AS average FROM ratings WHERE userId = ".$prodid;
+    $sql2 = "SELECT avg(rating) as average from ratings where prodId = $prodid";
+    $exeSQL2 = mysqli_query($conn, $sql2);
+    $ratingArray = mysqli_fetch_array($exeSQL2);
+    $averageRating = $ratingArray['average'];
+    
+    echo "<b> Average Rating: ".round($averageRating,2) ." / 5</b>";
+    echo "&nbsp &nbsp";
+    if(isset($_SESSION['userid']) and $_SESSION['user_type'] == 'Customer'){
+        echo "<a href = add_rating.php?prod_id=".$arrayp['prodId'].">";
+        echo "Click Here to Add Rating to Product </a>";
+    }
+    echo "<br> <br>";
+    echo "<a href = view_ratings.php?prod_id=".$arrayp['prodId'].">";
+    echo "Click Here to View All Rating of this Product </a> <br/><br>";
     
     echo "<input type = 'submit' value = 'ADD TO BASKET'>";
     //pass the product id to the next page basket.php as a hidden value
