@@ -58,7 +58,6 @@ while($arrayp = mysqli_fetch_array($exeSQL)){
     }
     echo "</select><br/><br/>";
 
-    //$sql2 = "SELECT AVG(rating) AS average FROM ratings WHERE userId = ".$prodid;
     $sql2 = "SELECT avg(rating) as average from ratings where prodId = $prodid";
     $exeSQL2 = mysqli_query($conn, $sql2);
     $ratingArray = mysqli_fetch_array($exeSQL2);

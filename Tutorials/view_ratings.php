@@ -27,13 +27,9 @@ if(isset($prodid)){
     ratings.prodId = ".$prodid;
     $exeSQL = mysqli_query($conn, $sql);
 
-    $sql2 = "SELECT prodName from product WHERE prodId = ".$prodid;
+    $sql2 = "SELECT prodName, prodId from product WHERE prodId = ".$prodid;
     $exeSQL2 = mysqli_query($conn, $sql2);
     $arrayproduct = mysqli_fetch_array($exeSQL2);
-
-
-
-    
 
     echo "<h5> Ratings for {$arrayproduct['prodName']} </h5>";
     echo "<table>";
@@ -55,6 +51,24 @@ if(isset($prodid)){
     $ratingArray = mysqli_fetch_array($exeSQL3);
     $averageRating = $ratingArray['average'];
     echo "<p> <b> Average Rating: ". round($averageRating,2)." / 5 </b> </p>";
+    
+    if(isset($_SESSION['userid'])){
+        $sql4 = "SELECT rating FROM ratings WHERE userId = ".$_SESSION['userid'];
+        $exeSQL4 = mysqli_query($conn, $sql4);
+        $scoreOfUser = mysqli_fetch_array($exeSQL4);
+        $rating = $scoreOfUser['rating'];
+
+        if(!empty($rating)){
+        echo "<p> Your Rating: {$scoreOfUser['rating']} / 5 </p>";
+        echo "<p>";
+        echo "<a href = delete_rating.php?prod_id=".$arrayproduct['prodId']."\&user_id=".$_SESSION['userid'].">";
+        echo "Delete Your Rating </a> </p>";
+        }else{
+            echo "<p> You have not rated the product yet. </p>";
+            echo "<p><a href = add_rating.php?prod_id=".$arrayproduct['prodId'].">";
+            echo "Click Here to Add Rating to Product </a></p>";
+        }
+    }
 }
 
 include ("footfile.html"); //include footer layout
